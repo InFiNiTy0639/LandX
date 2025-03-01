@@ -31,7 +31,7 @@ class UserResponse(BaseModel):
     firstname: str
     lastname: str
     email: str
-    phonenum: str | None  # Made nullable to match UserCreate
+    phonenum: str | None  
     role: UserRole
 
 class UserInDB(BaseModel):

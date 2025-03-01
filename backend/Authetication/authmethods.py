@@ -10,7 +10,7 @@ from jose import JWTError, jwt
 from typing import Optional
 
 
-# JWT configuration (centralized here)
+# JWT configuration 
 SECRET_KEY = "your-secret-key"  # Replace with a secure key
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
@@ -18,7 +18,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# OAuth2 scheme (updated to a generic endpoint, we'll handle role in routes)
+# OAuth2 scheme
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 def get_db():
@@ -69,17 +69,15 @@ def create_user(db: Session, user: UserCreate):
 def authenticate_user(db: Session, email: str, password: str):
     user = db.query(User).filter(User.email == email).first()
     if not user or not verify_password(password, user.hashed_password):
-        return None  # Changed to None for better route handling
+        return None 
     return user
 
 # Create JWT token
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-    to_encode.update({"exp": expire, "role": data.get("role")})  # Include role in token
+    to_encode.update({"exp": expire, "role": data.get("role")}) 
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
-# Get current user from token
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
