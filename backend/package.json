@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "dateutil": "^0.1.0",
+    "pdf-lib": "^1.17.1"
+  }
+}
