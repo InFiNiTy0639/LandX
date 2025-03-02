@@ -28,15 +28,10 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  logout: async () => {
-    try {
-      await logout();
+  logout: () => {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       set({ user: null, token: null, role: null });
-    } catch (error) {
-      console.error("Logout failed:", error.response?.data || error.message);
-    }
   },
 }));
