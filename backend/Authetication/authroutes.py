@@ -49,11 +49,11 @@ def register_tenant(user: UserCreate, db: Session = Depends(get_db)):
     db_user = create_user(db=db, user=user)
     return UserResponse(
         firstname=db_user.firstname, # type: ignore
-        lastname=db_user.lastname,# type: ignore
-        email=db_user.email,# type: ignore
+        lastname=db_user.lastname, # type: ignore
+        email=db_user.email, # type: ignore
         phonenum=db_user.phonenum, # type: ignore
         role=db_user.role # type: ignore
-    )
+    ) 
 
 # Owner Login
 @router.post("/Ownerlogin", response_model=Token)

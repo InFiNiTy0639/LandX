@@ -36,10 +36,11 @@ function OwnerLoginPage() {
       const response = await googleSignIn(token);
       setUser(response.data.user, response.data.role);
       setToken(response.data.access_token);
-      router.push("/dashboard");
+      router.push("/OwnerDashboard");
     } catch (error) {
       setErrorMessage(
-        error.response?.data?.message || "Google login failed. Please try again."
+        error.response?.data?.message ||
+          "Google login failed. Please try again."
       );
     }
   };
@@ -51,7 +52,13 @@ function OwnerLoginPage() {
           Owner Login
         </h2>
 
-        <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }} className="mt-6">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
+          className="mt-6"
+        >
           <LabelInputContainer className="mb-4">
             <Label htmlFor="email">Email Address</Label>
             <Input

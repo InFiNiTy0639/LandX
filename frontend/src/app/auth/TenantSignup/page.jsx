@@ -8,6 +8,7 @@ import Link from "next/link";
 import { tenantsignup } from "@/lib/api";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useAuthStore } from "@/store/auth";
+import { tenantlogin } from "@/lib/api";
 
 const countryCodes = [
   { name: "United States", code: "+1" },
@@ -39,22 +40,30 @@ function TenantSignupPage() {
   const { setUser, setToken } = useAuthStore();
 
   const handleSignup = async () => {
+    if (!firstName || !lastName || !email || !password) {
+      setErrorMessage("All fields are required.");
+      return;
+    }
+
+    console.log("Signup payload:", { firstName, lastName, email, password, countryCode, phoneNumber });
+
     try {
-      const response = await tenantsignup(
-        firstName,
-        lastName,
-        email,
-        password,
-        countryCode,
-        phoneNumber
-      );
-      const user = `${firstName} ${lastName}`; 
-      const token = await tenantlogin(email, password); 
+      const response = await tenantsignup(firstName, lastName, email, password, countryCode, phoneNumber);
+      const user = `${firstName} ${lastName}`;
+      const token = await tenantlogin(email, password);
       setUser(user, "tenant");
       setToken(token.data.access_token);
       router.push("/TenantDashboard");
     } catch (error) {
-      setErrorMessage(error.response?.data?.detail || "Signup failed");
+      if (error.response?.data?.detail) {
+        if (Array.isArray(error.response.data.detail)) {
+          setErrorMessage(error.response.data.detail[0].msg || "Signup failed");
+        } else {
+          setErrorMessage(error.response.data.detail);
+        }
+      } else {
+        setErrorMessage("Signup failed. Please try again.");
+      }
     }
   };
 
@@ -80,6 +89,7 @@ function TenantSignupPage() {
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="Aadil"
               type="text"
+              required
             />
           </LabelInputContainer>
           <LabelInputContainer>
@@ -90,6 +100,7 @@ function TenantSignupPage() {
               onChange={(e) => setLastName(e.target.value)}
               placeholder="Rizwan"
               type="text"
+              required 
             />
           </LabelInputContainer>
         </div>
@@ -102,6 +113,7 @@ function TenantSignupPage() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="example@gmail.com"
             type="email"
+            required 
           />
         </LabelInputContainer>
 
@@ -112,7 +124,7 @@ function TenantSignupPage() {
               id="password"
               placeholder="••••••••"
               type={passwordVisible ? "text" : "password"}
-              required
+              required 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />

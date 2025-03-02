@@ -23,9 +23,9 @@ class UserCreate(BaseModel):
     lastname: str
     email: str 
     password: str
-    role: UserRole
-    phoneCode: str | None = None
-    phonenum: str | None = None
+    role: UserRole | None = None 
+    phoneCode: str | None = None # Optional
+    phonenum: str | None = None  # Optional
 
 class UserResponse(BaseModel):
     firstname: str

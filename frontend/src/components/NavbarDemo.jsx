@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export function NavbarDemo() {
   return (
-    <div className="relative w-full">
+    <div className="relative w-full navbar-demo">
       <Navbar className="top-0" />
     </div>
   );

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { ownersignup } from "@/lib/api";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useAuthStore } from "@/store/auth";
+import { ownerlogin } from "@/lib/api";
 
 const countryCodes = [
   { name: "United States", code: "+1" },
@@ -39,15 +40,28 @@ function OwnerSignupPage() {
   const { setUser, setToken } = useAuthStore();
 
   const handleSignup = async () => {
+    if(!firstName || !lastName || !email || !password){
+      setErrorMessage("All fields are required");
+      return;
+    }
+    console.log("Signup payload:", {firstName,lastName,email,password,countryCode,phoneNumber});
     try {
       const response = await ownersignup(firstName, lastName, email, password, countryCode, phoneNumber);
-      const user = `${firstName} ${lastName}`; 
+      const user = `${firstName} ${lastName}`;
       const token = await ownerlogin(email, password);
       setUser(user, "owner");
       setToken(token.data.access_token);
       router.push("/OwnerDashboard");
     } catch (error) {
-      setErrorMessage(error.response?.data?.detail || "Signup failed");
+      if (error.response?.data?.detail) {
+        if (Array.isArray(error.response.data.detail)) {
+          setErrorMessage(error.response.data.detail[0].msg || "Signup failed");
+        } else {
+          setErrorMessage(error.response.data.detail);
+        }
+      } else {
+        setErrorMessage("Signup failed. Please try again.");
+      }
     }
   };
 
@@ -73,6 +87,7 @@ function OwnerSignupPage() {
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="Aadil"
               type="text"
+              required
             />
           </LabelInputContainer>
           <LabelInputContainer>
@@ -83,6 +98,7 @@ function OwnerSignupPage() {
               onChange={(e) => setLastName(e.target.value)}
               placeholder="Rizwan"
               type="text"
+              required
             />
           </LabelInputContainer>
         </div>
@@ -95,6 +111,7 @@ function OwnerSignupPage() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="example@gmail.com"
             type="email"
+            required
           />
         </LabelInputContainer>
 

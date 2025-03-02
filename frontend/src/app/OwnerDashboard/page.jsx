@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   FiHome,
   FiUser,
@@ -12,10 +12,27 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { useAuthStore } from "@/store/auth";
+
 export default function OwnerDashboard() {
   const [active, setActive] = useState("Dashboard");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const { token, role, logout } = useAuthStore();
+
+  useEffect(() => {
+    if (pathname === "/OwnerDashboard" && token) {
+      const navbar = document.querySelector(".navbar-demo");
+      if (navbar) {
+        navbar.style.display = "none";
+      }
+      return () => {
+        if (navbar) {
+          navbar.style.display = "block";
+        }
+      };
+    }
+  }, [pathname, token]);
 
   const menuItems = [
     { name: "Dashboard", icon: <FiHome /> },
@@ -68,8 +85,12 @@ export default function OwnerDashboard() {
       status: "Available",
     },
   ];
+  const handleLogout = () => {
+    logout();
+    router.push("/auth/OwnerLogin");
+  };
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRole="owner">
       <div className="flex h-screen bg-gray-900 text-white">
         <aside className="hidden md:flex md:w-64 flex-col bg-gray-800 p-5">
           <div className="flex items-center pb-6 border-b border-gray-700">
@@ -91,7 +112,10 @@ export default function OwnerDashboard() {
             ))}
           </nav>
           <div className="mt-auto">
-            <button className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-300 hover:bg-gray-700 rounded-lg">
+            <button
+              className="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-300 hover:bg-gray-700 rounded-lg"
+              onClick={handleLogout}
+            >
               <FiLogOut className="mr-3 text-lg" /> Logout
             </button>
           </div>

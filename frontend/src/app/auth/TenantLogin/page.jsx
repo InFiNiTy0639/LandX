@@ -29,7 +29,20 @@ function TenantLoginPage() {
       );
     }
   };
-
+  const handleGoogleLogin = async () => {
+    try {
+      const token = "google_oauth_token";
+      const response = await googleSignIn(token);
+      setUser(response.data.user, response.data.role);
+      setToken(response.data.access_token);
+      router.push("/TenantDashboard");
+    } catch (error) {
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Google login failed. Please try again."
+      );
+    }
+  };
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="max-w-md w-full p-8 shadow-lg bg-white dark:bg-black rounded-2xl border border-blue-300 hover:shadow-blue-400 dark:hover:shadow-blue-500 hover:border-blue-500 transition duration-300">
