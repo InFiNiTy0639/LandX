@@ -1,3 +1,4 @@
+import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
@@ -5,7 +6,7 @@ from typing import Annotated
 from datetime import timedelta
 from .authmethods import authenticate_user, create_access_token, create_user, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
 from .Authmodels import UserCreate, UserInDB, Token, UserResponse, UserRole
-from Schemas import User
+from Schemas import User, UserProfile
 from dbconn import SessionLocal
 
 def get_db():
@@ -21,9 +22,9 @@ router = APIRouter(
 )
 
 # JWT Configuration
-# SECRET_KEY = "your-secret-key"
-# ALGORITHM = "HS256"
-# ACCESS_TOKEN_EXPIRE_MINUTES = 30
+SECRET_KEY = "your-secret-key"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 # Owner Signup
 @router.post("/OwnerSignup", response_model=UserResponse)
@@ -63,12 +64,20 @@ def owner_login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: 
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid credentials or not an Owner",
-            headers={"WWW-Authenticate": "Bearer"},
+            # headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(data={"sub": user.email, "role": user.role}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
-    return {"access_token": access_token, "user": f"{user.firstname} {user.lastname}", "role": user.role, "token_type": "bearer"}
+    return {
+    "access_token": access_token,
+    "user": f"{user.firstname} {user.lastname}",
+    "id": user.id,
+    "role": user.role,
+    "phonenum": user.phonenum or "",
+    "phoneCode": user.phoneCode or "",
+    "token_type": "bearer"
+  }
 
-# Tenant Login
+# Tenant Login  
 @router.post("/Tenantlogin", response_model=Token)
 def tenant_login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = authenticate_user(db, request.username, request.password)
@@ -82,8 +91,15 @@ def tenant_login(request: OAuth2PasswordRequestForm = Depends(), db: Session = D
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(data={"sub": user.email}, expires_delta=access_token_expires)
-    
-    return {"access_token": access_token, "user": f"{user.firstname} {user.lastname}", "role": user.role, "token_type": "bearer"}
+    return {
+    "access_token": access_token,
+    "user": f"{user.firstname} {user.lastname}",
+    "id": user.id,
+    "role": user.role,
+    "phonenum": user.phonenum or "",
+    "phoneCode": user.phoneCode or "",
+    "token_type": "bearer"
+  }
 
 # Fetch Logged-in User
 @router.get("/me", response_model=UserInDB)

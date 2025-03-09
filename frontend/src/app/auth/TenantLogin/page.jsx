@@ -20,9 +20,11 @@ function TenantLoginPage() {
   const handleLogin = async () => {
     try {
       const response = await tenantlogin(email, password);
-      setUser(response.data.user, response.data.role);
+      const fullName = response.data.user;
+      const userId = response.data.id;
+      setUser({ id: userId, name: fullName }, "tenant");
       setToken(response.data.access_token);
-      router.push("/TenantDashboard");
+      router.push("/TenantPortal/TenantDashboard");
     } catch (error) {
       setErrorMessage(
         error.response?.data?.detail || "Login failed. Please try again."
@@ -35,7 +37,7 @@ function TenantLoginPage() {
       const response = await googleSignIn(token);
       setUser(response.data.user, response.data.role);
       setToken(response.data.access_token);
-      router.push("/TenantDashboard");
+      router.push("/TenantPortal/TenantDashboard");
     } catch (error) {
       setErrorMessage(
         error.response?.data?.message ||

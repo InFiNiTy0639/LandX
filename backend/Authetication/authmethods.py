@@ -13,7 +13,7 @@ from typing import Optional
 # JWT configuration 
 SECRET_KEY = "your-secret-key"  # Replace with a secure key
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

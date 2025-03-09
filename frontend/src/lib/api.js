@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://127.0.0.1:8000/auth";
+const API_URL = "http://127.0.0.1:8000";
 
 export const api = axios.create({
   baseURL: API_URL,
@@ -11,7 +11,7 @@ export const ownerlogin = async (email, password) => {
   const formData = new FormData();
   formData.append("username", email);
   formData.append("password", password);
-  return api.post("/Ownerlogin", formData, {
+  return api.post("/auth/Ownerlogin", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
@@ -21,14 +21,14 @@ export const tenantlogin = async (email, password) => {
   const formData = new FormData();
   formData.append("username", email);
   formData.append("password", password);
-  return api.post("/Tenantlogin", formData, {
+  return api.post("/auth/Tenantlogin", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
 
 // Owner Signup API
 export const ownersignup = async (firstname, lastname, email, password, countryCode, phoneNumber) => {
-  return api.post("/OwnerSignup", {
+  return api.post("/auth/OwnerSignup", {
     firstname,
     lastname,
     email,
@@ -40,7 +40,7 @@ export const ownersignup = async (firstname, lastname, email, password, countryC
 
 // Tenant Signup API
 export const tenantsignup = async (firstname, lastname, email, password, countryCode, phoneNumber) => {
-  return api.post("/TenantSignup", {
+  return api.post("/auth/TenantSignup", {
     firstname,
     lastname,
     email,
@@ -49,6 +49,21 @@ export const tenantsignup = async (firstname, lastname, email, password, country
     phonenum: phoneNumber,
   });
 };
+
+export const updateProfile = async (profileData) => {
+  return api.put("/auth/update-profile", profileData, {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  });
+};
+
+export const refreshToken = async () => {
+  const response = await api.post("/auth/refresh-token", {
+    refresh_token: localStorage.getItem("refresh_token"),
+  });
+  localStorage.setItem("token", response.data.access_token);
+  return response.data.access_token;
+};
+
 
 export const googleSignIn = async (token) => {
   return api.post("/google-login", { token });
@@ -62,9 +77,9 @@ export const getUserProfile = async () => {
   return api.get("/Tprofile");
 };
 
-export const refreshToken = async () => {
-  return api.post("/refresh-token");
-};
+// export const refreshToken = async () => {
+//   return api.post("/refresh-token");
+// };
 
 export const forgotPassword = async (email) => {
   return api.post("/forgot-password", { email });

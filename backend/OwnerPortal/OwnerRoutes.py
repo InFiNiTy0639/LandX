@@ -13,7 +13,7 @@ from dbconn import SessionLocal
 from fastapi import FastAPI, File, UploadFile, HTTPException, Depends
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
-from Schemas import PropertyDb, PropertyImages,PropertyVideos, User
+from Schemas import PropertyDb, PropertyImages,PropertyVideos, User, UserProfile
 import os
 
 
@@ -144,6 +144,14 @@ async def create_owner_profile(id:int,requestprofile: CreateOProfile,Userpic: Up
 #@router.post("/createlease_doc/{lease_id}",response_model=leasedocResponse)
 #async def create_lease_doc(id:int,request:create_lease_doc, pdf_file:UploadFile = File(), db: Session = Depends(get_db),current_user: User = Depends(get_current_user)):
 #   return create_lease_doc(id,request,pdf_file )
+
+
+@router.get("/me", response_model=ProfileOresponse)
+async def get_owner_profile(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    profile = db.query(UserProfile).filter(UserProfile.user_id == current_user.id).first()
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    return profile
 
 
 

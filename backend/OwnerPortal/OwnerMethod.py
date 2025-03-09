@@ -224,7 +224,7 @@ def create_installment(id:str,requestIntallments:Installmentcreate,db:Session):
 
 
 async def create_owner_profile(id:int,requestProfile:CreateOProfile,Userpic: UploadFile, db: Session ):
-
+    print("Received profile data:", requestProfile.dict(), "File:", Userpic.filename)
     ImageFolder=f"static/user_pics/{id}/"
     os.makedirs(ImageFolder,exist_ok=True)
     file_path = os.path.join(ImageFolder, Userpic.filename) # type: ignore

@@ -46,22 +46,24 @@ function OwnerSignupPage() {
     }
     console.log("Signup payload:", {firstName,lastName,email,password,countryCode,phoneNumber});
     try {
-      const response = await ownersignup(firstName, lastName, email, password, countryCode, phoneNumber);
-      const user = `${firstName} ${lastName}`;
-      const token = await ownerlogin(email, password);
-      setUser(user, "owner");
-      setToken(token.data.access_token);
-      router.push("/OwnerDashboard");
+      await ownersignup(firstName, lastName, email, password, countryCode, phoneNumber);
+      const response = await ownerlogin(email, password);
+      // const fullName = `${firstName} ${lastName}`;
+      const userData = {
+        id: response.data.id,
+        firstName: firstName,
+        lastName:lastName,
+        email:email,
+        phoneNumber: phoneNumber,
+        countryCode: countryCode,
+        password: "********",
+      };
+      setUser(userData, "owner");
+      setToken(response.data.access_token);
+      console.log("Signup data set:", userData);
+      router.push("/OwnerPortal/OwnerDashboard");
     } catch (error) {
-      if (error.response?.data?.detail) {
-        if (Array.isArray(error.response.data.detail)) {
-          setErrorMessage(error.response.data.detail[0].msg || "Signup failed");
-        } else {
-          setErrorMessage(error.response.data.detail);
-        }
-      } else {
-        setErrorMessage("Signup failed. Please try again.");
-      }
+      setErrorMessage(error.response?.data?.detail || "Signup failed");
     }
   };
 

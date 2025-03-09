@@ -26,8 +26,8 @@ class User(Base):
     hashed_password = Column(String)
     role = Column(Enum(UserRole))
     email = Column(String, unique=True, index=True, nullable=True)
-    phoneCode=Column(String)
-    phonenum =Column(String)
+    phoneCode=Column(String,nullable=True)
+    phonenum =Column(String, nullable=True)
 
 #user Profile model
 class UserProfile(Base):

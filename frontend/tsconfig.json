@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/ui/label.jsx", "tailwind.config.js", "src/lib/utils.js", "src/components/ui/input.jsx", "src/components/ui/hero-highlight.jsx", "src/app/auth/OwnerLogin/page.jsx", "src/app/TenantDashboard/page.jsx", "src/app/page.jsx", "src/app/layout.jsx", "src/components/NavbarDemo.jsx", "src/components/image.jsx", "src/components/ui/navbar-menu.jsx", "src/app/OwnerDashboard/page.jssrc/app/auth/signup/page.jsxe.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/ui/label.jsx", "tailwind.config.js", "src/lib/utils.js", "src/components/ui/input.jsx", "src/components/ui/hero-highlight.jsx", "src/app/auth/OwnerLogin/page.jsx", "src/app/TenantPortal/TenantDashboard/page.jsx", "src/app/page.jsx", "src/app/layout.jsx", "src/components/NavbarDemo.jsx", "src/components/image.jsx", "src/components/ui/navbar-menu.jsx", "src/app/OwnerPortal/OwnerDashboard/page.jssrc/app/auth/signup/page.jsxe.jsx", "src/app/OwnerPortal/OwnerPropertyCreate/page.jsx", "src/app/OwnerProfileCreate/page.jsx", "src/app/OwnerPortal/MyProfile/page.jsx"],
   "exclude": ["node_modules"]
 }

@@ -20,9 +20,21 @@ function OwnerLoginPage() {
   const handleLogin = async () => {
     try {
       const response = await ownerlogin(email, password);
-      setUser(response.data.user, response.data.role);
+      console.log("Login response:", response.data);
+      const [firstName,lastName] = response.data.user.split(" ");
+      const userData = {
+        id: response.data.id,
+        firstName:firstName || "",
+        lastName :lastName || "",
+        email:email,
+        phoneNumber: response.data.phonenum ||  "",
+        countryCode:response.data.phoneCode || "",
+        password: "********",
+      };
+      setUser(userData, "owner");
       setToken(response.data.access_token);
-      router.push("/OwnerDashboard");
+      console.log("Login data set:", userData);
+      router.push("/OwnerPortal/OwnerDashboard");
     } catch (error) {
       setErrorMessage(
         error.response?.data?.detail || "Login failed. Please try again."
@@ -36,7 +48,7 @@ function OwnerLoginPage() {
       const response = await googleSignIn(token);
       setUser(response.data.user, response.data.role);
       setToken(response.data.access_token);
-      router.push("/OwnerDashboard");
+      router.push("/OwnerPortal/OwnerDashboard");
     } catch (error) {
       setErrorMessage(
         error.response?.data?.message ||

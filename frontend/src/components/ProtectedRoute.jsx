@@ -20,9 +20,9 @@ const ProtectedRoute = ({ children, allowedRole = null }) => {
       }
     } else if (allowedRole && role !== allowedRole) {
       if (role === "owner") {
-        router.push("/OwnerDashboard");
+        router.push("/OwnerPortal/OwnerDashboard");
       } else if (role === "tenant") {
-        router.push("/TenantDashboard");
+        router.push("/TenantPortal/TenantDashboard");
       } else {
         router.push("/auth/OwnerLogin");  
       }

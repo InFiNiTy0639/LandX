@@ -53,7 +53,7 @@ function TenantSignupPage() {
       const token = await tenantlogin(email, password);
       setUser(user, "tenant");
       setToken(token.data.access_token);
-      router.push("/TenantDashboard");
+      router.push("/TenantPortal/TenantDashboard");
     } catch (error) {
       if (error.response?.data?.detail) {
         if (Array.isArray(error.response.data.detail)) {
